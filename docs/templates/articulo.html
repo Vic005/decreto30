@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}{{ nodo.titulo }} — Mapa IMIV{% endblock %}
+{% block content %}
+
+<a href="/{{ '?q=' + q if q }}" class="volver">← Volver al inicio</a>
+
+<article class="detalle">
+  <header class="detalle-header" style="--line-color: {{ linea.color }};">
+    <span class="detalle-linea"><a href="/linea/{{ linea.id }}">{{ linea.nombre }}</a></span>
+    <h1>{{ nodo.titulo }}</h1>
+    <div class="detalle-meta-row">
+      <span class="detalle-articulo">{{ nodo.articulo }}</span>
+      {% if nodo.parrafo %}<span class="tag-parrafo">{{ nodo.parrafo }}</span>{% endif %}
+    </div>
+    <div class="detalle-badges">
+      {% for c in categorias_aplicables %}<span class="badge-cat" style="--tab-color: {{ c.color }};">{{ c.nombre }}</span>{% endfor %}
+    </div>
+    {% if nodo.estado == "verificar" %}
+      <span class="badge-verificar">⚠ contenido de ejemplo — verificar con el texto oficial</span>
+    {% elif nodo.estado == "verificar_tabla" %}
+      <span class="badge-verificar">⚠ este artículo incluye una tabla o cuadro de datos que no se extrajo correctamente del PDF (aparecen puntos sueltos donde debería haber una tabla). Revisa la tabla directamente en el documento oficial.</span>
+    {% endif %}
+  </header>
+
+  <section class="detalle-bloque">
+    <h2>Resumen</h2>
+    <p>{{ nodo.resumen }}</p>
+  </section>
+
+  <section class="detalle-bloque">
+    <h2>Texto del artículo</h2>
+    {{ m.texto_en_bloques(nodo.texto) }}
+  </section>
+
+  {% if nodo.casos_especiales %}
+  <section class="detalle-bloque bloque-casos">
+    <h2>Casos especiales</h2>
+    <ul>
+      {% for c in nodo.casos_especiales %}<li>{{ c }}</li>{% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  {% if nodo.excepciones %}
+  <section class="detalle-bloque bloque-excepciones">
+    <h2>Excepciones</h2>
+    <ul>
+      {% for e in nodo.excepciones %}<li>{{ e }}</li>{% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  {% if relacionados %}
+  <section class="detalle-bloque">
+    <h2>Artículos relacionados</h2>
+    <ul class="lista-relacionados">
+      {% for r in relacionados %}
+        <li>
+          <a href="/articulo/{{ r.id }}{{ '?q=' + q if q }}" class="chip-relacionado">
+            <span class="tag-articulo-mini">{{ r.articulo }}</span> {{ r.titulo }}
+            {% if r.parrafo %}<span class="chip-relacionado-parrafo">{{ r.parrafo }}</span>{% endif %}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+  {% endif %}
+
+  <section class="detalle-bloque detalle-contexto">
+    <a href="/linea/{{ linea.id }}" class="ver-mas">← Ver todos los artículos de «{{ linea.nombre }}»</a>
+  </section>
+</article>
+
+{% endblock %}

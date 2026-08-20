@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}{{ info.nombre }} — Mapa IMIV{% endblock %}
+{% block content %}
+
+<a href="/{{ '?q=' + q if q is defined and q }}" class="volver">← Volver al inicio</a>
+
+<header class="cat-header" style="--cat-color: {{ info.color }};">
+  <nav class="cat-tabs">
+    {% for c, i in categorias_info.items() %}
+      <a href="/categoria/{{ c }}" class="cat-tab {{ 'cat-tab-activo' if c == cat }}" style="--tab-color: {{ i.color }};">{{ i.nombre }}</a>
+    {% endfor %}
+  </nav>
+  <h1>{{ info.nombre }}</h1>
+  <p class="cat-resumen">{{ total }} artículos del Decreto 30 aplican a esta categoría, agrupados por tema. Haz clic en cada uno para ver su contenido completo.</p>
+  <div class="cat-stats">
+    <span>⚑ {{ con_excepciones|length }} artículos con excepciones</span>
+    <span>⚑ {{ con_casos|length }} artículos con casos especiales</span>
+  </div>
+  {% if grupos|length > 3 %}
+  <nav class="indice-temas" aria-label="Saltar a un tema">
+    {% for grupo in grupos %}
+      <a href="#grupo-{{ grupo.linea.id }}" class="indice-tema-chip" style="--tema-color: {{ grupo.linea.color }};">{{ grupo.linea.nombre.split(" — ", 1)[1] if " — " in grupo.linea.nombre else grupo.linea.nombre }}</a>
+    {% endfor %}
+  </nav>
+  {% endif %}
+</header>
+
+{% for grupo in grupos %}
+<section class="cat-grupo" id="grupo-{{ grupo.linea.id }}">
+  <h2 style="border-color: {{ grupo.linea.color }};">
+    <a href="/linea/{{ grupo.linea.id }}">{{ grupo.linea.nombre }}</a>
+  </h2>
+  {{ m.indice_rapido(grupo.nodos) }}
+  <div class="lista-desplegable">
+    {% for n in grupo.nodos %}
+      {{ m.articulo_desplegable(n) }}
+    {% endfor %}
+  </div>
+</section>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,56 @@
+{% macro texto_en_bloques(texto) %}
+  <div class="texto-bloques">
+    {% for b in texto | bloques %}
+      {% if b.tipo == "item" %}
+        <div class="bloque-item">
+          <span class="bloque-marca">{{ b.marca }}</span>
+          <span class="bloque-contenido">{{ b.contenido }}</span>
+        </div>
+      {% else %}
+        <p class="bloque-parrafo">{{ b.contenido }}</p>
+      {% endif %}
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro articulo_desplegable(n, abierto=False) %}
+  <details class="articulo-desplegable" id="{{ n.id }}" {{ "open" if abierto }}>
+    <summary>
+      <span class="ad-encabezado">
+        <span class="tag-articulo-mini">{{ n.articulo }}</span>
+        {% if n.parrafo %}<span class="tag-parrafo">{{ n.parrafo }}</span>{% endif %}
+      </span>
+      <span class="ad-titulo">{{ n.titulo }}</span>
+      <span class="ad-flags">
+        {% if n.casos_especiales %}<span class="mini-flag">casos especiales</span>{% endif %}
+        {% if n.excepciones %}<span class="mini-flag mini-flag-alt">excepciones</span>{% endif %}
+        {% if n.estado == "verificar_tabla" %}<span class="mini-flag mini-flag-warn">tabla sin extraer</span>{% endif %}
+      </span>
+    </summary>
+    <div class="ad-contenido">
+      {{ texto_en_bloques(n.texto) }}
+      {% if n.casos_especiales %}
+        <h4>Casos especiales</h4>
+        <ul>{% for c in n.casos_especiales %}<li>{{ c }}</li>{% endfor %}</ul>
+      {% endif %}
+      {% if n.excepciones %}
+        <h4>Excepciones</h4>
+        <ul>{% for e in n.excepciones %}<li>{{ e }}</li>{% endfor %}</ul>
+      {% endif %}
+      <a href="/articulo/{{ n.id }}" class="ver-mas">Ver página completa de este artículo →</a>
+    </div>
+  </details>
+{% endmacro %}
+
+{% macro indice_rapido(nodos) %}
+  {% if nodos|length > 4 %}
+    <nav class="indice-rapido" aria-label="Salto rápido a artículos">
+      <span class="indice-rapido-label">Salto rápido:</span>
+      {% for n in nodos %}
+        <a href="#{{ n.id }}" class="indice-chip">
+          {{ n.articulo.replace("Art. ", "") }}{% if n.parrafo %} <span class="indice-chip-sub">· {{ n.parrafo }}</span>{% endif %}
+        </a>
+      {% endfor %}
+    </nav>
+  {% endif %}
+{% endmacro %}

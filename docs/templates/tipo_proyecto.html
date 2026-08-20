@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}{{ tipo.nombre }} — Análisis por tipo de proyecto{% endblock %}
+{% block content %}
+
+<a href="/tipos-proyecto" class="volver">← Volver a tipos de proyecto</a>
+
+<header class="cat-header" style="--cat-color: #8a4fae;">
+  <h1>{{ tipo.nombre }}</h1>
+  <p class="cat-resumen">Todo lo que el Decreto 30 dice específicamente sobre este tipo de proyecto, reunido en un solo lugar.</p>
+</header>
+
+<section class="cat-grupo">
+  <h2 style="border-color: #8a4fae;">Clasificación y estimación de flujos</h2>
+  {% if bloque_123 %}
+    {% if tabla_rota %}
+      <p class="badge-verificar badge-verificar-block">⚠ El cuadro con las tasas numéricas de este literal no se logró extraer del PDF (aparecen puntos sueltos). El texto y las notas sí están completos — para los valores exactos de la tabla, revisa el artículo 1.2.3 directamente en el PDF oficial.</p>
+    {% endif %}
+    <div class="bloque-fuente">
+      {{ m.texto_en_bloques(bloque_123) }}
+    </div>
+    <a href="/articulo/n1_2_3" class="ver-mas">Ver artículo 1.2.3 completo (todos los tipos de proyecto) →</a>
+  {% else %}
+    <p class="vacio">Este tipo de proyecto no tiene un literal específico en el artículo 1.2.3.</p>
+  {% endif %}
+</section>
+
+{% if caso_especial %}
+<section class="cat-grupo">
+  <h2 style="border-color: #c1443c;">Consideraciones y casos especiales</h2>
+  <div class="bloque-fuente bloque-fuente-alerta">
+    <span class="tag-parrafo" style="margin-bottom:10px;">Art. 3.6.12 — Disposiciones especiales para la mitigación de impactos</span>
+    {{ m.texto_en_bloques(caso_especial) }}
+  </div>
+  <a href="/articulo/n3_6_12" class="ver-mas">Ver artículo 3.6.12 completo →</a>
+</section>
+{% endif %}
+
+<section class="cat-grupo">
+  <h2 style="border-color: var(--line-green);">Otros artículos que mencionan este tipo de proyecto</h2>
+  {% if relacionados %}
+    <p class="cat-resumen" style="margin-bottom:14px;">{{ relacionados|length }} artículos más, encontrados buscando "{{ tipo.keywords|join('", "') }}" en todo el decreto.</p>
+    {{ m.indice_rapido(relacionados) }}
+    <div class="lista-desplegable">
+      {% for n in relacionados %}
+        {{ m.articulo_desplegable(n) }}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="vacio">No se encontraron otras menciones directas en el resto del decreto.</p>
+  {% endif %}
+</section>
+
+{% endblock %}

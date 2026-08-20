@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Análisis por tipo de proyecto — Mapa IMIV{% endblock %}
+{% block content %}
+
+<a href="/" class="volver">← Volver al inicio</a>
+
+<header class="cat-header" style="--cat-color: #8a4fae;">
+  <h1>Análisis por tipo de proyecto</h1>
+  <p class="cat-resumen">
+    El Decreto 30 clasifica los proyectos por "uso de suelo/destino" en el
+    artículo 1.2.3 (para estimar los flujos que genera cada tipo), y trae
+    consideraciones especiales adicionales para algunos destinos en el
+    artículo 3.6.12. Elige un tipo de proyecto para ver todo lo que le
+    aplica, agrupado en un solo lugar.
+  </p>
+</header>
+
+<div class="tarjetas-tipo-grid">
+  {% for t in tipos %}
+    <a href="/tipo/{{ t.slug }}" class="tarjeta-tipo">
+      <span class="tarjeta-tipo-nombre">{{ t.nombre }}</span>
+      {% if t.caso_especial_letra %}<span class="tarjeta-tipo-flag">tiene consideraciones especiales</span>{% endif %}
+    </a>
+  {% endfor %}
+</div>
+
+{% endblock %}

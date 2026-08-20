@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Mapa IMIV — Decreto 30{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <a href="/" class="brand">
+    <span class="brand-mark" aria-hidden="true">◈</span>
+    <span class="brand-text">Mapa IMIV <span class="brand-sub">· Decreto&nbsp;30 / MTT</span></span>
+  </a>
+  <form class="search" action="/" method="get" role="search">
+    <label for="q" class="sr-only">Buscar en el decreto</label>
+    <input type="text" id="q" name="q" placeholder="Buscar por palabra, artículo o caso especial…" value="{{ q if q is defined else '' }}">
+    <button type="submit">Buscar</button>
+  </form>
+</header>
+
+<main>
+{% block content %}{% endblock %}
+</main>
+
+<footer class="page-footer">
+  <p>Herramienta de estudio no oficial sobre el Decreto Supremo N°30 (MTT), reglamento del IMIV.
+  Verifica siempre el texto vigente en <a href="https://www.bcn.cl/leychile/navegar?idNorma=1131679" target="_blank" rel="noopener">LeyChile</a> antes de usarlo en un caso real.</p>
+</footer>
+</body>
+</html>

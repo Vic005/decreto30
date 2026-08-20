@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+{% block title %}{{ linea.nombre }} — Mapa IMIV{% endblock %}
+{% block content %}
+
+<a href="/" class="volver">← Volver al inicio</a>
+
+<header class="cat-header" style="--cat-color: {{ linea.color }};">
+  <h1>{{ linea.nombre }}</h1>
+  <p class="cat-resumen">{{ nodos|length }} artículos en este tema. Aplica a:
+    {% for c in categorias_aplicables %}<span class="badge-cat" style="--tab-color: {{ c.color }};">{{ c.nombre }}</span>{% endfor %}
+  </p>
+</header>
+
+{{ m.indice_rapido(nodos) }}
+
+<div class="lista-desplegable">
+  {% for n in nodos %}
+    {{ m.articulo_desplegable(n) }}
+  {% endfor %}
+</div>
+
+{% endblock %}

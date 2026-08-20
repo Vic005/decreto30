@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Mapa IMIV — Decreto 30{% endblock %}
+{% block content %}
+
+<section class="selector-imiv">
+  <h1 class="selector-titulo">¿Qué tipo de IMIV necesitas revisar?</h1>
+  <div class="tarjetas-categoria">
+    {% for cat, info in categorias_info.items() %}
+      <a href="/categoria/{{ cat }}" class="tarjeta-categoria" style="--cat-color: {{ info.color }};">
+        <span class="tarjeta-categoria-nombre">{{ info.nombre }}</span>
+        <span class="tarjeta-categoria-conteo">{{ conteo_categorias[cat] }} artículos aplicables</span>
+        <span class="tarjeta-categoria-cta">Ver requisitos, contenido y casos especiales →</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="selector-imiv selector-tipo-proyecto">
+  <h2 class="selector-subtitulo">¿O tu proyecto es de un tipo específico? <span class="selector-subtitulo-ej">(bodega, colegio, centro de salud, comercio…)</span></h2>
+  <a href="/tipos-proyecto" class="tarjeta-tipo-cta">
+    Ver análisis por tipo de proyecto — clasificación y casos especiales por destino →
+  </a>
+</section>
+
+<section class="temas">
+  <h2>O explora por tema</h2>
+  {% for grupo in grupos_tema %}
+    <details class="tema-titulo-grupo" {{ "open" if loop.first }}>
+      <summary>{{ grupo.titulo_num }} — {{ grupo.titulo_nombre }}</summary>
+      <div class="tarjetas-tema">
+        {% for l in grupo.lineas %}
+          <a href="/linea/{{ l.id }}" class="tarjeta-tema" style="--tema-color: {{ l.color }};">
+            <span class="tarjeta-tema-dot"></span>
+            <span class="tarjeta-tema-nombre">{{ l.nombre.split(" — ", 1)[1] if " — " in l.nombre else l.nombre }}</span>
+            <span class="tarjeta-tema-conteo">{{ conteo_por_linea.get(l.id, 0) }} art.</span>
+          </a>
+        {% endfor %}
+      </div>
+    </details>
+  {% endfor %}
+</section>
+
+<section class="buscador-seccion">
+  <h2>O busca directamente</h2>
+  <form class="search-inline" action="/" method="get" role="search">
+    <input type="text" name="q" placeholder="Ej: exención, plazo de evaluación, predio resultante…" value="{{ q if q is defined else '' }}">
+    <button type="submit">Buscar</button>
+  </form>
+
+  {% if resultados is not none %}
+    <h3>Resultados{% if q %} para «{{ q }}»{% endif %} ({{ resultados|length }})</h3>
+    {% if resultados|length == 0 %}
+      <p class="vacio">No hay artículos que calcen. Prueba con otra palabra.</p>
+    {% else %}
+      <ul class="lista-resultados">
+        {% for r in resultados %}
+          <li>
+            <a href="/articulo/{{ r.id }}{{ '?q=' + q if q }}" class="tarjeta-resultado">
+              <span class="tag-articulo">{{ r.articulo }}</span>
+              <span class="tarjeta-titulo">{{ r.titulo }}</span>
+              <span class="tarjeta-resumen">{{ r.resumen }}</span>
+              {% if r.casos_especiales %}<span class="tarjeta-flag">⚑ casos especiales</span>{% endif %}
+              {% if r.excepciones %}<span class="tarjeta-flag tarjeta-flag-alt">⚑ excepciones</span>{% endif %}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endif %}
+</section>
+
+<section class="mapa-visual-seccion">
+  <details>
+    <summary>Ver mapa visual completo (todas las líneas conectadas)</summary>
+    <div class="mapa-wrap">
+      {{ svg | safe }}
+    </div>
+  </details>
+</section>
+
+{% endblock %}
